@@ -20,7 +20,7 @@ def update_gitignore():
 
     for item in items:
         # Skip the script file and .gitignore file
-        if item == script_name or item == ".gitignore" or item == "update_repos.py":
+        if item == script_name or item == ".gitignore" or item == "update_repos.py" or item == "README.md":
             continue
 
         # Add directory names with a trailing slash
