@@ -25,7 +25,9 @@ def check_status(repo_path):
         if ahead and behind:
             print(f"Repository '{repo_path}' has diverged from the remote. Manual update required.")
         elif ahead:
-            print(f"Repository '{repo_path}' is ahead of the remote. Push needed.")
+            print(f"Repository '{repo_path}' is ahead of the remote. Pushing updates...")
+            subprocess.run(["git", "add", "."], cwd=repo_path, check=True)
+            subprocess.run(["git", "push"], cwd=repo_path, check=True)
         elif behind:
             print(f"Repository '{repo_path}' is behind the remote. Pulling updates...")
             subprocess.run(["git", "pull"], cwd=repo_path, check=True)
