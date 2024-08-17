@@ -6,7 +6,7 @@ def is_git_repo(path):
     """Check if a directory is a Git repository."""
     return os.path.isdir(os.path.join(path, '.git'))
 
-def fetch_and_pull(repo_path):
+def check_status(repo_path):
     """Fetch and pull changes from the remote repository, and check for potential conflicts."""
     try:
         print(f"Fetching and checking status in {repo_path}...")
@@ -40,7 +40,7 @@ def update_directories(base_dir):
         for d in dirs:
             dir_path = os.path.join(root, d)
             if is_git_repo(dir_path):
-                print(dir_path[2:len(dir_path)])
+                check_status(dir_path)
 
 if __name__ == "__main__":
     update_gitignore()
