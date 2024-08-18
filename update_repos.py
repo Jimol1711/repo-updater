@@ -68,9 +68,7 @@ def check_status(repo_path):
             return
 
         status_output = subprocess.check_output(["git", "status", "-uno"], cwd=repo_path).decode("utf-8")
-        print(status_output)
         local_commits = subprocess.check_output(["git", "rev-list", "HEAD...@{u}", "--left-right"], cwd=repo_path).decode("utf-8").splitlines()
-        print(local_commits)
 
         ahead = behind = False
         for commit in local_commits:
