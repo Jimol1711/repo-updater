@@ -69,7 +69,7 @@ def check_status(repo_path):
             print(f"Repository '{shortened_repo_path}' does not have an upstream branch set.")
             return
 
-        status_output = subprocess.check_output(["git", "status", "-uno"], cwd=repo_path).decode("utf-8")
+        status_output = subprocess.check_output(["git", "status"], cwd=repo_path).decode("utf-8")
         local_commits = subprocess.check_output(["git", "rev-list", "HEAD...@{u}", "--left-right"], cwd=repo_path).decode("utf-8").splitlines()
 
         ahead = behind = False
