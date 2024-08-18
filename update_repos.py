@@ -59,12 +59,14 @@ def has_upstream(repo_path):
 
 def check_status(repo_path):
     """Fetch and pull changes from the remote repository, and check for potential conflicts."""
+    shortened_repo_path = repo_path[9:len(repo_path)]
+
     try:
-        print(f"Fetching and checking status in {repo_path}...")
+        print(f"Fetching and checking status in {shortened_repo_path}...")
         subprocess.run(["git", "fetch"], cwd=repo_path, check=True)
 
         if not has_upstream(repo_path):
-            print(f"Repository '{repo_path}' does not have an upstream branch set.")
+            print(f"Repository '{shortened_repo_path}' does not have an upstream branch set.")
             return
 
         status_output = subprocess.check_output(["git", "status", "-uno"], cwd=repo_path).decode("utf-8")
@@ -79,28 +81,28 @@ def check_status(repo_path):
 
         if "Changes to be committed:" in status_output or "Changes not staged for commit:" in status_output and not "set-upstream" in status_output:
             subprocess.run(["git", "add", "."], cwd=repo_path, check=True)
-            commit_message = input(f"Commit message for repo {repo_path}: ")
+            commit_message = input(f"Commit message for repo {shortened_repo_path}: ")
             subprocess.run(["git", "commit", "-m", commit_message], cwd=repo_path, check=True)
             subprocess.run(["git", "push"], cwd=repo_path, check=True)
         elif "set-upstream" in status_output:
-            print(f"Repository '{repo_path}' does not have an upstream branch set.")
+            print(f"Repository '{shortened_repo_path}' does not have an upstream branch set.")
 
         if ahead and behind:
-            print(f"Repository '{repo_path}' has diverged from the remote. Manual update required.")
+            print(f"Repository '{shortened_repo_path}' has diverged from the remote. Manual update required.")
         elif ahead:
-            print(f"Repository '{repo_path}' is ahead of the remote. Pushing updates...")
+            print(f"Repository '{shortened_repo_path}' is ahead of the remote. Pushing updates...")
             # Check if there are changes to commit
             if "Changes to be committed:" in status_output or "Changes not staged for commit:" in status_output:
                 subprocess.run(["git", "add", "."], cwd=repo_path, check=True)
                 subprocess.run(["git", "commit", "-m", "automatic commit message"], cwd=repo_path, check=True)
             subprocess.run(["git", "push"], cwd=repo_path, check=True)
         elif behind:
-            print(f"Repository '{repo_path}' is behind the remote. Pulling updates...")
+            print(f"Repository '{shortened_repo_path}' is behind the remote. Pulling updates...")
             subprocess.run(["git", "pull"], cwd=repo_path, check=True)
         else:
-            print(f"No changes detected in {repo_path}.")
+            print(f"No changes detected in {shortened_repo_path}.")
     except subprocess.CalledProcessError as e:
-        print(f"Failed to fetch/pull in {repo_path}: {e}")
+        print(f"Failed to fetch/pull in {shortened_repo_path}: {e}")
 
 def update_directories(base_dir):
     """Recursively check directories."""
