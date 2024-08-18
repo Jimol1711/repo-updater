@@ -79,12 +79,18 @@ def check_status(repo_path):
             elif commit.startswith(">"):
                 behind = True  # Local is behind the remote
 
+        if "Changes to be committed:" in status_output or "Changes not staged for commit:" in status_output:
+            subprocess.run(["git", "add", "."], cwd=repo_path, check=True)
+            commit_message = input(f"Commit message for repo {repo_path}: ")
+            subprocess.run(["git", "commit", "-m", commit_message], cwd=repo_path, check=True)
+            subprocess.run(["git", "push"], cwd=repo_path, check=True)
+
         if ahead and behind:
             print(f"Repository '{repo_path}' has diverged from the remote. Manual update required.")
         elif ahead:
             print(f"Repository '{repo_path}' is ahead of the remote. Pushing updates...")
             # Check if there are changes to commit
-            if "Changes to be committed:" in status_output:
+            if "Changes to be committed:" in status_output or "Changes not staged for commit:" in status_output:
                 subprocess.run(["git", "add", "."], cwd=repo_path, check=True)
                 subprocess.run(["git", "commit", "-m", "automatic commit message"], cwd=repo_path, check=True)
             subprocess.run(["git", "push"], cwd=repo_path, check=True)
