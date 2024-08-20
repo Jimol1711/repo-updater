@@ -79,7 +79,13 @@ def check_status(repo_path):
             elif commit.startswith(">"):
                 behind = True  # Local is behind the remote
 
-        if "Changes to be committed:" in status_output or "Changes not staged for commit:" in status_output or "Untracked files" in status_output or "Archivos sin seguimiento:" in status_output and not "set-upstream" in status_output:
+        if "Changes to be committed:" in status_output or \
+           "Changes not staged for commit:" in status_output or \
+           "Untracked files" in status_output or \
+           "Cambios no rastreados para el commit:" in status_output or \
+           "Archivos sin seguimiento:" in status_output and not \
+           "set-upstream" in status_output:
+            
             subprocess.run(["git", "add", "."], cwd=repo_path, check=True)
             commit_message = input(f"Commit message for repo {shortened_repo_path}: ")
             subprocess.run(["git", "commit", "-m", commit_message], cwd=repo_path, check=True)
