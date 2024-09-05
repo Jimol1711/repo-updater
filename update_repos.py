@@ -79,19 +79,21 @@ def check_status(repo_path):
             elif commit.startswith(">"):
                 behind = True  # Local is behind the remote
 
-        if "Changes to be committed:" in status_output or \
-           "Changes not staged for commit:" in status_output or \
-           "Untracked files" in status_output or \
-           "Cambios no rastreados para el commit:" in status_output or \
-           "Archivos sin seguimiento:" in status_output and not \
-           "set-upstream" in status_output:
-            
-            subprocess.run(["git", "add", "."], cwd=repo_path, check=True)
-            commit_message = input(f"Commit message for repo {shortened_repo_path}: ")
-            subprocess.run(["git", "commit", "-m", commit_message], cwd=repo_path, check=True)
-            subprocess.run(["git", "push"], cwd=repo_path, check=True)
-        elif "set-upstream" in status_output:
-            print(f"Repository '{shortened_repo_path}' does not have an upstream branch set.")
+        # Different cases for different languages
+        commit_outputs = ["Changes to be committed:", 
+                          "Changes not staged for commit:", 
+                          "Untracked files", 
+                          "Cambios no rastreados para el commit:", 
+                          "Archivos sin seguimiento:"]
+
+        for output in commit_outputs:
+            if output in status_output:
+                subprocess.run(["git", "add", "."], cwd=repo_path, check=True)
+                commit_message = input(f"Commit message for repo {shortened_repo_path}: ")
+                subprocess.run(["git", "commit", "-m", commit_message], cwd=repo_path, check=True)
+                subprocess.run(["git", "push"], cwd=repo_path, check=True)
+            elif "set-upstream" in status_output:
+                print(f"Repository '{shortened_repo_path}' does not have an upstream branch set.")
 
         if ahead and behind:
             print(f"Repository '{shortened_repo_path}' has diverged from the remote. Manual update required.")
@@ -115,7 +117,7 @@ def update_directories(base_dir):
     for root, dirs, _ in os.walk(base_dir):
         for d in dirs:
             if d.startswith("tarea-0") or \
-                d == "cc5905":
+                d == "cc5905": # Added only for Memes purposes
                 continue
             dir_path = os.path.join(root, d)
             if is_git_repo(dir_path):
