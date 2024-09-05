@@ -114,6 +114,8 @@ def update_directories(base_dir):
     """Recursively check directories."""
     for root, dirs, _ in os.walk(base_dir):
         for d in dirs:
+            if dir == "Correcciones Memes":
+                continue
             dir_path = os.path.join(root, d)
             if is_git_repo(dir_path):
                 check_status(dir_path)
